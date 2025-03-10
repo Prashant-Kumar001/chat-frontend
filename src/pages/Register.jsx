@@ -4,11 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import schema from "../utils/validationSchema";
-import Api from "../utils/frontendApi";
 import { Button, CircularProgress } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-
+import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -57,22 +57,28 @@ function Register() {
       formData.append("image", data.image);
     }
 
-    Api.registerUser(formData)
-      .then((response) => {
-        if (response.success) {
-          toast.success("Registration successful!");
-          reset();
-          setImagePreview(null);
-          setValue("image", null);
-          navigate("/login");
-        } else {
-          toast.error("Registration failed");
-        }
+    axios
+      .post(`${API_BASE_URL}/auth/register`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        toast.success("Registered successfully");
+        reset();
+        navigate("/login");
+      })
+      .catch((err) => {
+        toast.error(err.response?.data?.message || "Error");
       })
       .finally(() => {
         setLoading(false);
         toast.dismiss(toastId);
       });
+
+
+
   };
 
   return (
