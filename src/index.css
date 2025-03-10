@@ -1,0 +1,98 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+body {
+  box-sizing: border-box;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.p_font {
+  font-family: "Poppins", sans-serif;
+}
+
+.m_font {
+  font-family: "Montserrat", sans-serif;
+}
+
+.r_font_memo {
+  font-family: "Roboto Mono";
+}
+
+.r_font {
+  font-family: "Roboto", monospace;
+}
+
+
+
+.bg_blur {
+  backdrop-filter: blur(30px);
+}
+
+.HideScrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.header {
+  height: 45px;
+  background-color: orangered;
+}
+
+
+
+
+.C_hight {
+  height: calc(100vh - 65px);
+
+  overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+.dot-flashing {
+  width: 6px;
+  height: 6px;
+  background-color: gray;
+  border-radius: 50%;
+  animation: flash 1.4s infinite;
+}
+
+.dot-flashing:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot-flashing:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes flash {
+  0% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
