@@ -19,7 +19,7 @@ const Profile = React.lazy(() => import("../layout/Profile"));
 import { useMyChatQuery } from "../redux/api/api.js";
 import { useError, useSocketEvents } from "../hooks/hook.jsx";
 import { Grid2, Skeleton } from "@mui/material";
-import { useSocket } from "../socket.jsx";
+import { useSocket } from "../Socket";
 import {
   NEW_MESSAGE_ALERT,
   NEW_REQUEST,

@@ -1,7 +1,6 @@
 import React from "react";
 import ChatItem from "../shared/ChatItem";
 import { motion } from "framer-motion"
-import { animations } from "../lib/features";
 
 const ChatList = ({
   chats = [],

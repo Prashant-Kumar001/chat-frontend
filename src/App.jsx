@@ -15,7 +15,7 @@ import NewLoader from "./components/NewLoader";
 import AdminLayout from "./layout/AdminLayout";
 import { SocketProvider } from "./Socket";
 
-import NotFound from "./pages/Notfound";
+import NotFound from "./pages/NotFound";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));

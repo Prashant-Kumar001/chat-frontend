@@ -1,6 +1,5 @@
 import React from "react";
 import AppLayout from "../layout/AppLayout";
-import { motion } from "framer-motion";
 const Home = () => {
   return (
     <div className="h-full flex flex-col items-center justify-center text-3xl  font-semibold text-center">

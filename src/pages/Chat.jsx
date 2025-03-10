@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setIsFileMenu } from "../redux/reducers/misc.js";
 
 import { Skeleton, Button } from "@mui/material";
-import { useSocket } from "../socket.jsx";
+import { useSocket } from "../Socket";
 import {
   TYPING,
   NEW_MESSAGE,
