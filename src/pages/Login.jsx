@@ -37,7 +37,6 @@ function Login() {
       navigate("/");
       toast.success("Logged in successfully");
     } catch (error) {
-      console.log(error)
       toast.error(error.response.data.message);
       dispatch(setLoading(false));
     } finally {

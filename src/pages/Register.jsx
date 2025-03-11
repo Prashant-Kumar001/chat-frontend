@@ -65,13 +65,11 @@ function Register() {
         },
       })
       .then((res) => {
-        console.log(res);
         toast.success("Registered successfully");
         reset();
         navigate("/login");
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err.response?.data?.message || "Error");
       })
       .finally(() => {
