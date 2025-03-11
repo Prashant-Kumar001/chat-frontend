@@ -40,7 +40,7 @@ const ChatItem = ({
                         <Badge
                             badgeContent={newMessage.count}
                             color="error"
-                            sx={{ marginRight: 3 }}
+                            sx={{ marginRight: 3, marginTop: 2 }}
                         />
                     )}
                 </div>
