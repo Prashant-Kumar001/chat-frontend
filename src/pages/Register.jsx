@@ -65,11 +65,13 @@ function Register() {
         },
       })
       .then((res) => {
+        console.log(res);
         toast.success("Registered successfully");
         reset();
         navigate("/login");
       })
       .catch((err) => {
+        console.log(err);
         toast.error(err.response?.data?.message || "Error");
       })
       .finally(() => {
@@ -113,7 +115,6 @@ function Register() {
           <p className="text-red-500 text-sm mt-2">{errors.image?.message}</p>
         </div>
 
-        {/* Input Fields Section */}
         <div className="flex flex-col w-2/3 ">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {[
