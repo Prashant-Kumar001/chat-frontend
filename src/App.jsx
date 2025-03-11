@@ -51,7 +51,6 @@ const App = () => {
         });
         dispatch(login(res?.data.data?.user));
       } catch (error) {
-        console.error(error);
       } finally {
         dispatch(setLoading(false));
         setAuthChecked(true);

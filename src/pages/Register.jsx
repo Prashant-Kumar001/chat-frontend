@@ -60,9 +60,6 @@ function Register() {
     axios
       .post(`${API_BASE_URL}/auth/register`, formData, {
         withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
       })
       .then((res) => {
         toast.success("Registered successfully");
