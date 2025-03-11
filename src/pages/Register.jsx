@@ -61,7 +61,7 @@ function Register() {
       .post(`${API_BASE_URL}/auth/register`, formData, {
         withCredentials: true,
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {
