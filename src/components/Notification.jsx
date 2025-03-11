@@ -18,7 +18,7 @@ import { reset } from "../redux/reducers/chat.js";
 import { NEW_REQUEST } from "../constant/event.js";
 
 export default function Notifications({ onClose }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const { data, isLoading, refetch, isError, error, isFetching } =
     useGetMyNotificationsQuery();
   const notifications = data?.data || [];
@@ -38,13 +38,11 @@ export default function Notifications({ onClose }) {
               reject(`${status}`);
             }
           })
-          .catch((error) =>
-            reject(`Failed to ${status} request: ${error.message}`)
-          )
+          .catch((error) => reject(`${error.message}`))
           .finally(() => refetch());
       }),
       {
-        loading: `Processing request for user ${username}...`,
+        loading: ` ${username}...`,
         success: (message) => message,
         error: (message) => message,
       }
@@ -52,28 +50,26 @@ export default function Notifications({ onClose }) {
   };
 
   const closeHandler = () => {
-    onClose()
-    dispatch(reset())
+    onClose();
+    dispatch(reset());
     const updatedValue = {
-                userId: null,
-                count: 0
-              };
-              localStorage.setItem(NEW_REQUEST, JSON.stringify(updatedValue));
-  }
+      userId: null,
+      count: 0,
+    };
+    localStorage.setItem(NEW_REQUEST, JSON.stringify(updatedValue));
+  };
 
   return (
     <motion.div
       {...animations.div}
-      className="absolute z-50 top-[60px] right-10 w-96 p-3 rounded-xl shadow-lg bg-white border border-gray-200"
-      elevation={3}
+      className="absolute z-50 top-[60px] right-4 md:right-10 w-[90%] sm:w-80 md:w-96 p-4 rounded-xl shadow-lg bg-white border border-gray-200"
     >
-      <motion.div className="flex justify-between items-center border-b pb-2 mb-2">
-        <h2 className="text-lg font-semibold text-gray-900">Notifications</h2>
+      <motion.div className="flex justify-between items-center border-b pb-2 mb-3">
+        <h2 className="text-base md:text-lg font-semibold text-gray-900">Notifications</h2>
         <div className="flex items-center gap-2">
           <IconButton onClick={refetch} disabled={isLoading || !data?.success}>
             <RefreshIcon
-              className={`cursor-pointer ${isLoading || isFetching ? "animate-spin" : ""
-                }`}
+              className={`cursor-pointer ${isLoading || isFetching ? "animate-spin" : ""}`}
             />
           </IconButton>
           <IconButton onClick={closeHandler}>
@@ -89,7 +85,7 @@ export default function Notifications({ onClose }) {
       ) : notifications?.length === 0 ? (
         <p className="text-center text-gray-500 py-4">No new notifications</p>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 max-h-80 overflow-y-auto">
           <Box className="space-y-2">
             {notifications.map((notification) => (
               <Notification
@@ -107,26 +103,26 @@ export default function Notifications({ onClose }) {
 
 const Notification = ({ _id, sender, createdAt, requestHandler }) => {
   return (
-    <div className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 rounded-lg p-2 border border-gray-200 transition">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col md:flex-row items-center justify-between bg-gray-50 hover:bg-gray-100 rounded-lg p-2 border border-gray-200 transition">
+      <div className="flex items-center gap-3 w-full">
         <Avatar
           alt={sender?.name}
           src={sender?.avatar?.secure_url}
           className="w-10 h-10"
         />
-        <div className="flex flex-col gap-1">
-          <h1 className="text-gray-900 font-medium text-sm">
+        <div className="flex flex-col gap-1 w-full">
+          <h1 className="text-gray-900 font-medium text-sm md:text-base">
             {sender?.username}{" "}
-            <span className="text-gray-500 font-light text-xs">
+            <span className="text-gray-500 font-light text-xs md:text-sm">
               sent you a friend request
             </span>
           </h1>
-          <span className="text-gray-400 text-xs">
+          <span className="text-gray-400 text-xs md:text-sm">
             {moment(createdAt).fromNow()}
           </span>
         </div>
       </div>
-      <div className="flex gap-1">
+      <div className="flex gap-2 mt-2 md:mt-0">
         <IconButton
           size="small"
           color="success"
@@ -138,7 +134,7 @@ const Notification = ({ _id, sender, createdAt, requestHandler }) => {
             })
           }
         >
-          <Check className="w-4 h-4" />
+          <Check className="w-4 h-4 md:w-5 md:h-5" />
         </IconButton>
         <IconButton
           size="small"
@@ -151,7 +147,7 @@ const Notification = ({ _id, sender, createdAt, requestHandler }) => {
             })
           }
         >
-          <X className="w-4 h-4" />
+          <X className="w-4 h-4 md:w-5 md:h-5" />
         </IconButton>
       </div>
     </div>

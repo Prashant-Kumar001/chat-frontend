@@ -54,7 +54,7 @@ const NewGroup = ({ onClose }) => {
   };
 
   return (
-    <motion.div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 backdrop-blur-sm">
+    <motion.div className="fixed inset-0  px-4 md:px-0 flex items-center justify-center z-50 bg-black bg-opacity-50 backdrop-blur-sm">
       <motion.div
         {...animations.zoomIn}
         className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md"
