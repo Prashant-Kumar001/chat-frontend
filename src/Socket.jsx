@@ -9,7 +9,7 @@ export const useSocket = () => useContext(SocketContext);
 const SocketProvider = ({ children }) => {
   const socket = useMemo(
     () =>
-      io("https://chat-backend-lffn.onrender.com", {
+      io(API_BASE_URL , {
         withCredentials: true,
         reconnectionAttempts: 10,
         reconnectionDelay: 3000,
