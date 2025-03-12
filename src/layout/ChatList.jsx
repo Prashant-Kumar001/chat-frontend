@@ -14,12 +14,13 @@ const ChatList = ({
   ],
   handlerDeleteChat,
   width,
+  isMobileView,
 }) => {
   return (
-    <motion.div className={` ${width} h-full  m_font`}>
+    <motion.div className={` w-${width} h-full  m_font`}>
       {
         chats.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-center text-2xl font-semibold text-center">
+          <div className="h-full flex flex-col items-center justify-center text-[14px] md:text-3xl font-semibold text-center">
             <h1>add friend and start chatting</h1>
           </div>
         )
@@ -46,6 +47,7 @@ const ChatList = ({
             sameSender={chatId == _id}
             handlerDeleteChat={handlerDeleteChat}
             date={date}
+            isMobileView={isMobileView}
           />
         );
       })}

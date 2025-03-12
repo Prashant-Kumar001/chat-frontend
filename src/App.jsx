@@ -45,7 +45,7 @@ const App = () => {
     const currentUser = async () => {
       try {
         dispatch(setLoading(true));
-        const res = await axios.get(`${API_BASE_URL}/auth/me`, {
+        const res = await axios.get(`${API_BASE_URL}/api/v1/auth/me`, {
           withCredentials: true,
           headers: { "Content-Type": "application/json" },
         });

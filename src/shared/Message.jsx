@@ -14,7 +14,7 @@ const Message = ({ message, user }) => {
     <div className="flex flex-col px-4 py-2">
       <motion.div
         key={message?.chat}
-        {...animations.div}
+        {...animations.message}
         className={`flex ${sameSender ? "justify-end" : "justify-start"}`}
       >
         <div

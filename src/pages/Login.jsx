@@ -27,7 +27,7 @@ function Login() {
     dispatch(setLoading(true));
     const toastId = toast.loading("logging...")
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, data, {
+      const res = await axios.post(`${API_BASE_URL}/api/v1/auth/login`, data, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",

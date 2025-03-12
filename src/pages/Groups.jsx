@@ -1,4 +1,4 @@
-import React, { lazy, memo, Suspense, useEffect, useState } from "react";
+import React, { lazy, memo, Suspense, useEffect, useRef, useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import { MenuIcon, UserPlus, UserRoundX } from "lucide-react";
@@ -24,13 +24,16 @@ import { Check } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import NewLoader from "../components/NewLoader.jsx";
 import { setIsAddMember } from "../redux/reducers/misc.js";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
+import OpenTransferOwner from "../components/Dialogs/OpenTransferOwner";
+import { setOpenTransferFile } from "../redux/reducers/misc.js";
 
 const DialogsModal = lazy(() => import("../components/Dialogs/ConfirmDialog"));
 
 const Groups = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const TransferOwnerMenu = useRef(null);
   const chatId = useSearchParams()[0].get("group");
 
   const { user } = useSelector((state) => state.auth);
@@ -165,7 +168,7 @@ const Groups = () => {
       .catch((error) => {
         toast.error(error?.data?.message, {
           style: {
-            minWidth: '700px',
+            minWidth: "700px",
           },
         });
       })
@@ -175,183 +178,192 @@ const Groups = () => {
     setConformDeleteDialog(false);
   };
 
+  const HandlerTransferOwner = (e, _id) => {
+    console.log(_id)
+    e.preventDefault();
+    dispatch(setOpenTransferFile(true));
+    TransferOwnerMenu.current = e.currentTarget;
+  }
 
   return (
-    <Grid2
-      container
-      className="flex-1 overflow-hidden"
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "1fr",
-          sm: "300px 1fr",
-        },
-      }}
-    >
-      {/* Sidebar for larger screens */}
+    <>
+      <OpenTransferOwner transferOwnerMenu={TransferOwnerMenu} dispatch={dispatch} />
       <Grid2
+        container
+        className="flex-1 overflow-hidden"
         sx={{
-          display: { xs: "none", sm: "block" },
-          borderRadius: 2,
-          overflow: "hidden",
-          border: "1px solid rgba(214, 212, 237,0.8)",
-          height: "100vh",
-          backgroundColor: "#faead4",
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "300px 1fr",
+          },
         }}
       >
-        {isLoading ? (
-          <Skeleton variant="rectangular" height={50} />
-        ) : myGroups?.data?.length > 0 ? (
-          <GroupList myGroups={myGroups?.data} chatId={chatId} />
-        ) : (
-          <div className="flex justify-center items-center h-full">
-            <h2 className="text-2xl font-bold">No groups found</h2>
-          </div>
-        )}
-      </Grid2>
+        <Grid2
+          sx={{
+            display: { xs: "none", sm: "block" },
+            borderRadius: 2,
+            overflow: "hidden",
+            border: "1px solid rgba(214, 212, 237,0.8)",
+            height: "100vh",
+            backgroundColor: "#faead4",
+          }}
+        >
+          {isLoading ? (
+            <Skeleton variant="rectangular" height={50} />
+          ) : myGroups?.data?.length > 0 ? (
+            <GroupList myGroups={myGroups?.data} chatId={chatId} />
+          ) : (
+            <div className="flex justify-center items-center h-full">
+              <h2 className="text-2xl font-bold">No groups found</h2>
+            </div>
+          )}
+        </Grid2>
 
-      <div className={`w-full transition-all duration-300 p-1`}>
-        <div className="flex justify-between items-center">
-          <Icon
-            icon={<ArrowBackIcon />}
-            onClick={handleNavigateBack}
-            text="back"
-            title={"Back"}
-          />
-          <Icon
-            icon={<MenuIcon />}
-            onClick={handleOpenDrawer}
-            text="back"
-            title={"menu"}
-            display={true}
-          />
-        </div>
-
-        <div className="mb-4 flex flex-col items-center">
-          <h2 className="text-2xl font-bold">Welcome to Groups</h2>
-          <p className="text-gray-800 p_font text-[12px]">
-            Select a group to get the details
-          </p>
-        </div>
-        {isEdit ? (
-          <div className="flex justify-center text-3xl mb-10 items-center ">
-            <TextField
-              value={newGroupName}
-              id="standard-basic"
-              label="Standard"
-              variant="standard"
-              onChange={(e) => SetEditGroupName(e.target.value)}
-              sx={{ width: "50%" }}
+        <div className={`w-full transition-all duration-300 p-1`}>
+          <div className="flex justify-between items-center">
+            <Icon
+              icon={<ArrowBackIcon />}
+              onClick={handleNavigateBack}
+              text="back"
+              title={"Back"}
             />
             <Icon
-              icon={<Check />}
-              onClick={updateGroupName}
-              text="edit"
-              title={"Edit Group"}
-              disabled={loader}
+              icon={<MenuIcon />}
+              onClick={handleOpenDrawer}
+              text="back"
+              title={"menu"}
+              display={true}
             />
           </div>
-        ) : (
-          <>
-            {GroupName && (
-              <div className="flex flex-col gap-1">
-                <div className="flex justify-center flex-col text-xl mb-10 items-center ">
-                  <span className="font-bold"> {GroupName}</span>
-                  <Icon
-                    icon={<EditIcon />}
-                    onClick={() => setIsEdit(true)}
-                    text="edit"
-                    title={"Edit Group"}
-                    arrow={true}
-                  />
-                </div>
-                <div className=" mb-2 flex w-full md:max-w-2xl max-w-[20rem] mx-auto flex-col gap-1 ">
-                  <h1 className="mb-5 r_font text-center md:text-left font-medium font-sans text-xl">
-                    members
-                  </h1>
-                  <div className=" w-full mx-auto  flex flex-col gap-5 mb-5 overflow-scroll h-[42vh] HideScrollbar">
-                    {groupDetails?.isLoading ? (
-                      <Skeleton
-                        sx={{
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                    ) : (
-                      members?.map((item) => {
-                        return (
-                          <UserItem
-                            className="shadow-xl bg-gray-100"
-                            handler={() => handlerRemover(item)}
-                            key={item._id}
-                            user={item}
-                            size="sm"
-                            addIcon={<UserRoundX color="red" size={25} />}
-                          />
-                        );
-                      })
-                    )}
-                  </div>
-                  <div className="flex justify-center gap-4">
-                    <Icon
-                      icon={<PersonAddAlt1Icon />}
-                      onClick={handlerOpenDialog}
-                      text="add"
-                      arrow={true}
-                      title={"add users"}
-                    />
-                    <Icon
-                      title={"delete group"}
-                      icon={<DeleteIcon />}
-                      onClick={OpenHandlerDeleteGroup}
-                      text="delete group"
-                      arrow={true}
-                    />
-                  </div>
-                </div>
-                {conformDeleteDialog && (
-                  <Suspense fallback={<NewLoader />}>
-                    <DialogsModal
-                      handleClose={CloseHandlerDeleteUser}
-                      handleDelete={handleDelete}
-                      text={"are you sure you want to delete this group?"}
-                    />
-                  </Suspense>
-                )}
-                {isAddMember && (
-                  <Suspense fallback={<NewLoader />}>
-                    <AddMemberDialog
-                      handleClose={() => dispatch(setIsAddMember(false))}
-                      icon={<UserPlus size={25} color="green" />}
-                      chatId={chatId}
-                    />
-                  </Suspense>
-                )}
-              </div>
-            )}
-          </>
-        )}
 
-        {!GroupName && (
-          <div className="flex flex-col gap-1">
-            <div className="flex justify-center flex-col text-xl mb-10 items-center ">
-              <span className="text-2xl font-bold">
-                {" "}
-                Select a group to get the details
-              </span>
-            </div>
+          <div className="mb-4 flex flex-col items-center">
+            <h2 className="text-2xl font-bold">Welcome to Groups</h2>
+            <p className="text-gray-800 p_font text-[12px]">
+              Select a group to get the details
+            </p>
           </div>
-        )}
-      </div>
+          {isEdit ? (
+            <div className="flex justify-center text-3xl mb-10 items-center ">
+              <TextField
+                value={newGroupName}
+                id="standard-basic"
+                label="Standard"
+                variant="standard"
+                onChange={(e) => SetEditGroupName(e.target.value)}
+                sx={{ width: "50%" }}
+              />
+              <Icon
+                icon={<Check />}
+                onClick={updateGroupName}
+                text="edit"
+                title={"Edit Group"}
+                disabled={loader}
+              />
+            </div>
+          ) : (
+            <>
+              {GroupName && (
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-center flex-col text-xl mb-10 items-center ">
+                    <span className="font-bold"> {GroupName}</span>
+                    <Icon
+                      icon={<EditIcon />}
+                      onClick={() => setIsEdit(true)}
+                      text="edit"
+                      title={"Edit Group"}
+                      arrow={true}
+                    />
+                  </div>
+                  <div className=" mb-2 flex w-full md:max-w-2xl max-w-[20rem] mx-auto flex-col gap-1 ">
+                    <h1 className="mb-5 r_font text-center md:text-left font-medium font-sans text-xl">
+                      members
+                    </h1>
+                    <div className=" w-full mx-auto  flex flex-col gap-5 mb-5 overflow-scroll h-[42vh] HideScrollbar">
+                      {groupDetails?.isLoading ? (
+                        <Skeleton
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                      ) : (
+                        members?.map((item) => {
+                          return (
+                            <UserItem
+                              className="shadow-xl bg-gray-100"
+                              handler={() => handlerRemover(item)}
+                              key={item._id}
+                              user={item}
+                              size="sm"
+                              addIcon={<UserRoundX color="red" size={25} />}
+                              handlerTransferMenu={HandlerTransferOwner}
+                            />
+                          );
+                        })
+                      )}
+                    </div>
+                    <div className="flex justify-center gap-4">
+                      <Icon
+                        icon={<PersonAddAlt1Icon />}
+                        onClick={handlerOpenDialog}
+                        text="add"
+                        arrow={true}
+                        title={"add users"}
+                      />
+                      <Icon
+                        title={"delete group"}
+                        icon={<DeleteIcon />}
+                        onClick={OpenHandlerDeleteGroup}
+                        text="delete group"
+                        arrow={true}
+                      />
+                    </div>
+                  </div>
+                  {conformDeleteDialog && (
+                    <Suspense fallback={<NewLoader />}>
+                      <DialogsModal
+                        handleClose={CloseHandlerDeleteUser}
+                        handleDelete={handleDelete}
+                        text={"are you sure you want to delete this group?"}
+                      />
+                    </Suspense>
+                  )}
+                  {isAddMember && (
+                    <Suspense fallback={<NewLoader />}>
+                      <AddMemberDialog
+                        handleClose={() => dispatch(setIsAddMember(false))}
+                        icon={<UserPlus size={25} color="green" />}
+                        chatId={chatId}
+                      />
+                    </Suspense>
+                  )}
+                </div>
+              )}
+            </>
+          )}
 
-      <Drawer
-        open={isOpen}
-        disableEnforceFocus={true}
-        onClose={() => setIsOpen(false)}
-      >
-        <GroupList myGroups={myGroups?.data} chatId={chatId} />
-      </Drawer>
-    </Grid2>
+          {!GroupName && (
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-center flex-col text-xl mb-10 items-center ">
+                <span className="text-2xl font-bold">
+                  {" "}
+                  Select a group to get the details
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <Drawer
+          open={isOpen}
+          disableEnforceFocus={true}
+          onClose={() => setIsOpen(false)}
+        >
+          <GroupList myGroups={myGroups?.data} chatId={chatId} />
+        </Drawer>
+      </Grid2>
+    </>
   );
 };
 
@@ -359,7 +371,12 @@ const GroupList = ({ myGroups, chatId }) => {
   return (
     <div className="flex flex-col gap-1 ">
       {myGroups?.map((group, index) => (
-        <GroupListItem key={group._id} Groups={group} chatId={chatId} index={index} />
+        <GroupListItem
+          key={group._id}
+          Groups={group}
+          chatId={chatId}
+          index={index}
+        />
       ))}
     </div>
   );
@@ -373,9 +390,12 @@ const GroupListItem = memo(({ Groups, chatId, index }) => {
       to={`?group=${_id}`}
       onClick={(e) => chatId === _id && e.preventDefault()}
     >
-      <motion.div initial={{ opacity: 0, y: "-100%" }}
+      <motion.div
+        initial={{ opacity: 0, y: "-100%" }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: index * 0.1}} className="hover: rounded px-3 py-1 flex items-center gap-4 hover:bg-slate-900 hover:text-white">
+        transition={{ delay: index * 0.1 }}
+        className="hover: rounded px-3 py-1 flex items-center gap-4 hover:bg-slate-900 hover:text-white"
+      >
         <AvatarCard avatar={avatar} name={name} size="sm" />
         <p className="text-sm font-medium">{name}</p>
       </motion.div>

@@ -12,25 +12,31 @@ const UserItem = ({
   textColor = "text-gray-900",
   hover = true,
   disabled = false,
-  className=""
+  className = "",
+  handlerTransferMenu,
 }) => {
-
-
-
   return (
     <div
-      className={`flex items-center ${className} justify-between p-2 ${textColor}  rounded-lg ${border ? "border" : "border-none"
-        }  transition duration-200 ${hover ? "hover:bg-gray-200" : ""}`}
+      onContextMenu={(e) => handlerTransferMenu(e, user._id)}
+      className={`flex items-center ${className} justify-between p-2 ${textColor}  rounded-lg ${
+        border ? "border" : "border-none"
+      }  transition duration-200 ${hover ? "hover:bg-gray-200" : ""}`}
     >
       <div className="flex items-center gap-3 w-full">
-        <AvatarCard avatar={[user?.avatar?.secure_url]} name={user.username} size={size} />
+        <AvatarCard
+          avatar={[user?.avatar?.secure_url]}
+          name={user.username}
+          size={size}
+        />
         <div className="flex flex-col flex-grow">
           <h3 className={"text-black font-semibold"}>{user.username}</h3>
         </div>
       </div>
       <div>
         <button
-          className={`flex items-center ${disabled ? "cursor-not-allowed" : ""} justify-center p-2 rounded-md transition disabled:opacity-50`}
+          className={`flex items-center ${
+            disabled ? "cursor-not-allowed" : ""
+          } justify-center p-2 rounded-md transition disabled:opacity-50`}
           onClick={handler}
           disabled={disabled}
           aria-label="Add user"

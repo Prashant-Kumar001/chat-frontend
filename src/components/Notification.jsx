@@ -65,11 +65,15 @@ export default function Notifications({ onClose }) {
       className="absolute z-50 top-[60px] right-4 md:right-10 w-[90%] sm:w-80 md:w-96 p-4 rounded-xl shadow-lg bg-white border border-gray-200"
     >
       <motion.div className="flex justify-between items-center border-b pb-2 mb-3">
-        <h2 className="text-base md:text-lg font-semibold text-gray-900">Notifications</h2>
+        <h2 className="text-base md:text-lg font-semibold text-gray-900">
+          Notifications
+        </h2>
         <div className="flex items-center gap-2">
           <IconButton onClick={refetch} disabled={isLoading || !data?.success}>
             <RefreshIcon
-              className={`cursor-pointer ${isLoading || isFetching ? "animate-spin" : ""}`}
+              className={`cursor-pointer ${
+                isLoading || isFetching ? "animate-spin" : ""
+              }`}
             />
           </IconButton>
           <IconButton onClick={closeHandler}>
@@ -104,51 +108,53 @@ export default function Notifications({ onClose }) {
 const Notification = ({ _id, sender, createdAt, requestHandler }) => {
   return (
     <div className="flex flex-col md:flex-row items-center justify-between bg-gray-50 hover:bg-gray-100 rounded-lg p-2 border border-gray-200 transition">
-      <div className="flex items-center gap-3 w-full">
-        <Avatar
-          alt={sender?.name}
-          src={sender?.avatar?.secure_url}
-          className="w-10 h-10"
-        />
-        <div className="flex flex-col gap-1 w-full">
-          <h1 className="text-gray-900 font-medium text-sm md:text-base">
-            {sender?.username}{" "}
-            <span className="text-gray-500 font-light text-xs md:text-sm">
-              sent you a friend request
+      <div className="flex items-center justify-between gap-3 w-full">
+        <div className="flex gap-2">
+          <Avatar
+            alt={sender?.name}
+            src={sender?.avatar?.secure_url}
+            className="w-10 h-10"
+          />
+          <div className="flex flex-col gap-1">
+            <h1 className="text-gray-900 font-medium text-sm md:text-base">
+              {sender?.username}{" "}
+              <span className="text-gray-500 font-light text-xs md:text-sm">
+                sent you a friend request
+              </span>
+            </h1>
+            <span className="text-gray-400 text-xs md:text-sm">
+              {moment(createdAt).fromNow()}
             </span>
-          </h1>
-          <span className="text-gray-400 text-xs md:text-sm">
-            {moment(createdAt).fromNow()}
-          </span>
+          </div>
         </div>
-      </div>
-      <div className="flex gap-2 mt-2 md:mt-0">
-        <IconButton
-          size="small"
-          color="success"
-          onClick={() =>
-            requestHandler({
-              requestId: _id,
-              status: "accepted",
-              username: sender?.username,
-            })
-          }
-        >
-          <Check className="w-4 h-4 md:w-5 md:h-5" />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="error"
-          onClick={() =>
-            requestHandler({
-              requestId: _id,
-              status: "rejected",
-              username: sender?.username,
-            })
-          }
-        >
-          <X className="w-4 h-4 md:w-5 md:h-5" />
-        </IconButton>
+        <div className="flex gap-2 mt-2 md:mt-0">
+          <IconButton
+            size="small"
+            color="success"
+            onClick={() =>
+              requestHandler({
+                requestId: _id,
+                status: "accepted",
+                username: sender?.username,
+              })
+            }
+          >
+            <Check className="w-4 h-4 md:w-5 md:h-5" />
+          </IconButton>
+          <IconButton
+            size="small"
+            color="error"
+            onClick={() =>
+              requestHandler({
+                requestId: _id,
+                status: "rejected",
+                username: sender?.username,
+              })
+            }
+          >
+            <X className="w-4 h-4 md:w-5 md:h-5" />
+          </IconButton>
+        </div>
       </div>
     </div>
   );

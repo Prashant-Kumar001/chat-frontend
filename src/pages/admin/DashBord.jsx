@@ -23,7 +23,6 @@ const DashBord = () => {
   ];
   useError(errors);
 
-  console.log(data)
 
   const handleSearch = () => {
     console.log("Search clicked");

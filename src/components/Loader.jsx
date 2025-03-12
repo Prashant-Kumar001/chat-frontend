@@ -52,10 +52,14 @@ const Loader = () => {
 
 export default Loader;
 
-const TypingIndicator = () => {
+const TypingIndicator = ({ currentUserTyping }) => {
   return (
-    <div className="items-center px-4 flex gap-2">
-      <span className="text-gray-700 text-sm m_font">Typing</span>
+    <div className="text-white items-center px-4 flex gap-2">
+      {currentUserTyping ? (
+        <span className="text-sm m_font">{currentUserTyping} is typing</span>
+      ) : (
+        <span className="text-sm m_font">Typing</span>
+      )}
       <div className="dot-flashing"></div>
       <div className="dot-flashing"></div>
       <div className="dot-flashing"></div>

@@ -22,7 +22,6 @@ const MessageManagement = () => {
     },
   ];
 
-  console.log(messagess?.data?.transformMessages);
 
 
 const columns = [
@@ -101,38 +100,11 @@ const columns = [
     },
 ];
 
-  const messages = [
-    {
-      id: 1,
-      attachment: ["https://ik.imagekit.io/ikmedia/backlit.jpg"],
-      content: "Hello, How are you?",
-      sender: {
-        name: "John Doe",
-        avatar: ["https://via.placeholder.com/50"],
-      },
-      friends: ["Alice", "Bob", "Charlie"],
-      chat: "John Doe",
-      groupChat: false,
-      createdAt: "2022-01-10 12:30:00",
-    },
-    {
-      id: 2,
-      attachment: [],
-      content: "I'm fine, thanks for asking.",
-      sender: {
-        name: "Alice",
-        avatar: ["https://via.placeholder.com/50"],
-      },
-      friends: ["John Doe", "Bob", "Charlie"],
-      chat: "John Doe",
-      groupChat: false,
-      createdAt: "2022-01-10 12:35:00",
-    },
-  ];
+
 
   const [row, setRow] = React.useState([]);
   useEffect(() => {
-    if (messages) {
+    if (messagess) {
       setRow(
         messagess?.data?.transformMessages?.map((message) => ({
           ...messagess,

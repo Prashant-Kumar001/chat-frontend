@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from "react";
 import { useInfiniteScrollTop } from "6pp";
 import AppLayout from "../layout/AppLayout";
 import { MdOutlineAttachFile } from "react-icons/md";
-import { IoSend } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsFileMenu } from "../redux/reducers/misc.js";
 
-import { Skeleton, Button } from "@mui/material";
+import { Skeleton, IconButton } from "@mui/material";
 import { useSocket } from "../Socket";
 import {
   TYPING,
@@ -27,6 +26,7 @@ import FileMenu from "../components/Dialogs/FileMenu.jsx";
 import { removeNewMessageAlert } from "../redux/reducers/chat.js";
 import { TypingIndicator } from "../components/Loader.jsx";
 import { useNavigate } from "react-router-dom";
+import MessageInput from "../shared/MessageInput.jsx";
 
 const Chat = ({ chatId, user }) => {
   const dispatch = useDispatch();
@@ -34,6 +34,7 @@ const Chat = ({ chatId, user }) => {
   const { isFileMenu } = useSelector((state) => state.misc);
   const containerRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const timeoutTyping = useRef(null);
   const socket = useSocket();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -41,15 +42,16 @@ const Chat = ({ chatId, user }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [iamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
-  const timeoutTyping = useRef(null);
+  const [currentUserTyping, setCurrentUserTyping] = useState('');
+
   const {
     data: Chat,
     isLoading,
     isError,
     error,
   } = useChatDetailsQuery({ chatId }, { skip: !chatId });
-  const oldMessagesChunks = useGetMyMessagesQuery({ chatId, page });
 
+  const oldMessagesChunks = useGetMyMessagesQuery({ chatId, page });
   const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
     containerRef,
     oldMessagesChunks.data?.metadata?.totalPages,
@@ -57,33 +59,24 @@ const Chat = ({ chatId, user }) => {
     setPage,
     oldMessagesChunks.data?.data?.messages
   );
+
   const errors = [
     { isError, error },
     { isError: oldMessagesChunks.isError, error: oldMessagesChunks.error, fallback: () => navigate("/") },
   ];
 
   const members = Chat?.data?.members;
-
-
   let allMessages = [...(oldMessages || []), ...messages];
 
-  const scrollToBottom = () => {
+  useLayoutEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    setTimeout(scrollToBottom, 100);
-    return () => {
-      clearTimeout(scrollToBottom);
-    };
   }, [allMessages]);
-
-
 
   const handleClick = (event) => {
     dispatch(setIsFileMenu(true));
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     dispatch(setIsFileMenu(false));
     setAnchorEl(null);
@@ -92,7 +85,7 @@ const Chat = ({ chatId, user }) => {
   const sendMessage = (e) => {
     setMessage(e.target.value);
     if (!iamTyping) {
-      socket.emit(TYPING, { chatId, members });
+      socket.emit(TYPING, { chatId, members, user });
       setIamTyping(true);
     }
     if (timeoutTyping.current) clearTimeout(timeoutTyping.current);
@@ -104,8 +97,9 @@ const Chat = ({ chatId, user }) => {
 
   const isUserTyping = useCallback(
     (data) => {
+      if (data?.members.length > 2) setCurrentUserTyping(data.name);
       if (data.chatId !== chatId) return;
-      setUserTyping((prev) => !prev);
+      setUserTyping(true);
     },
     [chatId]
   );
@@ -113,52 +107,23 @@ const Chat = ({ chatId, user }) => {
   const stopUserTyping = useCallback(
     (data) => {
       if (data.chatId !== chatId) return;
-      setUserTyping((prev) => !prev);
+      setUserTyping(false);
+      setCurrentUserTyping('');
     },
     [chatId]
   );
 
   const messageForAlert = useCallback((content) => {
-    const AlertMessage = {
-      content,
-      sender: {
-        _id: 'djhsjhdfkjshdkfhsd',
-        name: "admin",
+    setMessages((prev) => [
+      ...prev,
+      {
+        content,
+        sender: { _id: "admin", name: "Admin" },
+        chat: chatId,
+        createdAt: new Date().toISOString(),
       },
-      chat: chatId,
-      createdAt: new Date().toISOString(),
-    };
-    console.log(AlertMessage);
-    setMessages((prev) => [...prev, AlertMessage]);
+    ]);
   }, [chatId]);
-
-  useEffect(() => {
-    dispatch(removeNewMessageAlert(chatId));
-    socket.emit(CHAT_JOINED, { user: user._id, members });
-    return () => {
-      setMessage("");
-      setMessages([]);
-      setPage(1);
-      setOldMessages([]);
-      socket.emit(CHAT_LEAVED, { user: user._id, members });
-    };
-  }, [chatId, members]);
-
-
-  useEffect(() => {
-    socket.on(TYPING, isUserTyping);
-    return () => socket.off(TYPING, isUserTyping);
-  }, [isUserTyping]);
-
-  useEffect(() => {
-    socket.on(STOP_TYPING, stopUserTyping);
-    return () => socket.off(STOP_TYPING, stopUserTyping);
-  }, [stopUserTyping]);
-
-  useEffect(() => {
-    socket.on(ALERT, messageForAlert);
-    return () => socket.off(ALERT, messageForAlert);
-  }, [messageForAlert]);
 
   const handleMessageSend = (e) => {
     e.preventDefault();
@@ -170,71 +135,62 @@ const Chat = ({ chatId, user }) => {
   const newMessageHandler = useCallback(
     (data) => {
       if (chatId !== data.chatId) return;
-      if (data?.message) setMessages((prev) => [...prev, data.message]);
+      setMessages((prev) => [...prev, data.message]); // ✅ Functional Update Fix
     },
-    []
+    [chatId]
   );
+
+  useEffect(() => {
+    dispatch(removeNewMessageAlert(chatId));
+    socket.emit(CHAT_JOINED, { user: user._id, members });
+    return () => {
+      setMessage("");
+      setMessages([]);
+      setPage(1);
+      setOldMessages([]);
+      socket.emit(CHAT_LEAVED, { user: user._id, members });
+    };
+  }, [chatId, members, dispatch, socket]);
+
+  useEffect(() => {
+    socket.on(TYPING, isUserTyping);
+    return () => socket.off(TYPING, isUserTyping);
+  }, [isUserTyping, socket]);
+
+  useEffect(() => {
+    socket.on(STOP_TYPING, stopUserTyping);
+    return () => socket.off(STOP_TYPING, stopUserTyping);
+  }, [stopUserTyping, socket]);
+
+  useEffect(() => {
+    socket.on(ALERT, messageForAlert);
+    return () => socket.off(ALERT, messageForAlert);
+  }, [messageForAlert, socket]);
 
   useEffect(() => {
     socket.on(NEW_MESSAGE, newMessageHandler);
     return () => socket.off(NEW_MESSAGE, newMessageHandler);
-  }, [newMessageHandler]);
+  }, [newMessageHandler, socket]);
 
   useError(errors);
 
   return isLoading ? (
     <Skeleton />
   ) : (
-    <div className="flex flex-col h-full bg-gray-100">
-      <div
-        ref={containerRef}
-        className="overflow-y-scroll h-[79vh] flex flex-col gap-4  "
-      >
-        {oldMessagesChunks.isLoading ? (
-          <Skeleton height="100%" />
-        ) : allMessages.length > 0 ? (
-          allMessages.map((msg, index) => (
-            <Message key={msg._id} message={msg} user={user} />
-          ))
-        ) : (
-          <div className="h-[77vh] flex items-center justify-center">
-            <h1 className="text-xl font-semibold text-center ">
-              No messages
-            </h1>
-          </div>
-        )}
-        {
-          userTyping &&
-          <TypingIndicator />
-        }
+    <div className="flex flex-col h-full bg-gray-900 text-gray-200">
+      <div ref={containerRef} className="overflow-y-scroll h-[79vh]">
+        {allMessages.map((msg) => (
+          <Message key={msg._id} message={msg} user={user} />
+        ))}
+        {userTyping && <TypingIndicator currentUserTyping={currentUserTyping} />}
         <div ref={messagesEndRef} />
       </div>
-      <div className="flex items-center gap-3 p-3  rounded-lg mt-2">
-        <Button onClick={handleClick}>
-          <MdOutlineAttachFile size={25} className="rotate-45 text-gray-700" />
-        </Button>
-        <FileMenu
-          handleClose={handleClose}
-          anchorEl={anchorEl}
-          open={isFileMenu}
-          chatId={chatId}
-        />
-        <form className="flex-1" onSubmit={handleMessageSend}>
-          <input
-            type="text"
-            className="w-full px-4 py-2 bg-gray-200 rounded-full outline-none"
-            value={message}
-            onChange={sendMessage}
-            placeholder="Type a message..."
-          />
-        </form>
-        <button
-          type="submit"
-          className="bg-orange-500 p-2 rounded-full  hover:bg-orange-600"
-          onClick={handleMessageSend}
-        >
-          <IoSend size={20} />
-        </button>
+      <div className="flex items-center p-3">
+        <IconButton onClick={handleClick}>
+          <MdOutlineAttachFile color="white" />
+        </IconButton>
+        <FileMenu handleClose={handleClose} anchorEl={anchorEl} open={isFileMenu} chatId={chatId} />
+        <MessageInput message={message} setMessage={sendMessage} handleMessageSend={handleMessageSend} />
       </div>
     </div>
   );

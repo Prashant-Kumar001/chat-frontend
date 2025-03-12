@@ -11,9 +11,15 @@ const SocketProvider = ({ children }) => {
     () =>
       io(API_BASE_URL, {
         withCredentials: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 3000,
       }),
     []
   );
+  socket.on("disconnect", () => {
+    console.log("Disconnected! Trying to reconnect...");
+    socket.connect();
+  });
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

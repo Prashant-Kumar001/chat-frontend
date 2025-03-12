@@ -29,6 +29,7 @@ import {
 } from "../constant/event.js";
 import { getOrSaveFromStorage } from "../lib/features.js";
 import DeleteChatMenu from "../components/Dialogs/OpenDeleteChat.jsx";
+import { autoBatchEnhancer } from "@reduxjs/toolkit";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -159,12 +160,6 @@ const AppLayout = () => (WrappedComponent) => {
             onClose={handleMobileClose}
             disableEnforceFocus={true}
             aria-label="Chat list drawer"
-            role="dialog"
-            sx={{
-              "& .MuiDrawer-paper": {
-                borderRight: "1px solid rgba(255,255,255,0.1)",
-              },
-            }}
           >
             <ChatList
               chats={myChats?.data}
@@ -173,19 +168,22 @@ const AppLayout = () => (WrappedComponent) => {
               handlerDeleteChat={handleDeleteChat}
               onlineUsers={onlineUsers}
               chatID={_id}
+              width={"250px"}
+              isMobileView={isMobileView}
             />
           </Drawer>
         )}
 
         <Grid2
           container
-          className="flex-1 overflow-hidden"
+          className="flex-1 overflow-hidden bg-gray-950 text-gray-200"
           sx={{
             display: "grid",
             gridTemplateColumns: {
               xs: "70px 1fr",
               sm: "350px 1fr",
               md: "350px 1fr 300px",
+              
             },
             gap: 1,
             p: 1,
@@ -193,10 +191,11 @@ const AppLayout = () => (WrappedComponent) => {
           }}
         >
           <Grid2
+            className="text-gray-100"
             sx={{
               borderRadius: 2,
               overflow: "hidden",
-              backgroundColor: "rgba(243, 244, 246)",
+              backgroundColor: "229 231 235",
             }}
           >
             {isLoading ? (
@@ -222,12 +221,12 @@ const AppLayout = () => (WrappedComponent) => {
             <WrappedComponent {...props} chatId={_id} user={user} />
           </Grid2>
           <Grid2
+            className="bg-gray-900 text-gray-100"
             sx={{
               display: { xs: "none", md: "block" },
               borderRadius: 2,
               p: 2,
               overflow: "hidden",
-              backgroundColor: "rgba(243, 244, 246)",
 
             }}
           >

@@ -9,6 +9,7 @@ const initialState = {
     isFileMenu: false,
     isDeleteMenu: false,
     isUploadingLoader: false,
+    openTransferFile: false,
     isSelectedDeleteChat: {
         chatId: "",
         groupChat: false,
@@ -49,6 +50,9 @@ const misc = createSlice({
         setLoading: (state, action) => {
             state.loading = action.payload;
         },
+        setOpenTransferFile: (state, action) => {
+            state.openTransferFile = action.payload;
+        },
     },
 });
 
@@ -63,5 +67,6 @@ export const {
     setIsUploadingLoader,
     setIsSelectedDeleteChat,
     setLoading,
+    setOpenTransferFile,
 } = misc.actions;
 export default misc.reducer;

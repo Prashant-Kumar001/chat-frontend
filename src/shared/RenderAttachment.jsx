@@ -24,7 +24,7 @@ const RenderAttachment = (file, url) => {
       return <audio
         style={{
           objectFit: "contain",
-          width: "200px",
+          width: "100px",
         }} src={url} preload="none" controls />;
 
     case "document":

@@ -58,7 +58,7 @@ function Register() {
     }
 
     axios
-      .post(`${API_BASE_URL}/auth/register`, formData, {
+      .post(`${API_BASE_URL}/api/v1/auth/register`, formData, {
         withCredentials: true,
       })
       .then((res) => {

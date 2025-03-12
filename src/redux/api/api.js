@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../../config";
 
 const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: `${API_BASE_URL}/` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${API_BASE_URL}/api/v1/` }),
   tagTypes: ["Chat", "User", "Messages"],
   endpoints: (builder) => ({
     myChat: builder.query({
