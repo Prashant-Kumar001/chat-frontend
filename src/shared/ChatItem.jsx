@@ -44,7 +44,7 @@ const ChatItem = ({
           isOnline={isOnline}
         />
         <div
-          className={`justify-between items-center w-36 md:w-56 px-5 ${
+          className={`justify-between items-center w-[11rem] md:w-56 ${
             isMobileView ? "flex" : "hidden md:flex"
           }`}
         >

@@ -135,7 +135,7 @@ const Chat = ({ chatId, user }) => {
   const newMessageHandler = useCallback(
     (data) => {
       if (chatId !== data.chatId) return;
-      setMessages((prev) => [...prev, data.message]); // ✅ Functional Update Fix
+      setMessages((prev) => [...prev, data.message]); 
     },
     [chatId]
   );
@@ -177,7 +177,7 @@ const Chat = ({ chatId, user }) => {
   return isLoading ? (
     <Skeleton />
   ) : (
-    <div className="flex flex-col h-full bg-gray-900 text-gray-200">
+    <div className="flex flex-col h-full">
       <div ref={containerRef} className="overflow-y-scroll h-[79vh]">
         {allMessages.map((msg) => (
           <Message key={msg._id} message={msg} user={user} />

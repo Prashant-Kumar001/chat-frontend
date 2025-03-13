@@ -108,6 +108,7 @@ const AppLayout = () => (WrappedComponent) => {
     );
 
     const onlineUsersListener = useCallback((data) => {
+      console.log(data)
       setOnlineUsers(data);
     }, []);
 
@@ -195,7 +196,7 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{
               borderRadius: 2,
               overflow: "hidden",
-              backgroundColor: "229 231 235",
+              backgroundColor: "rgb(229, 231, 235)",
             }}
           >
             {isLoading ? (
@@ -227,6 +228,7 @@ const AppLayout = () => (WrappedComponent) => {
               borderRadius: 2,
               p: 2,
               overflow: "hidden",
+              
 
             }}
           >

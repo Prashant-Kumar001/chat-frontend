@@ -1,6 +1,6 @@
 {
     "rewrites": [
-      { "source": "/chat/:path*", "destination": "/" }
+      { "source": "/(.*)", "destination": "/index.html" }
     ]
   }
   
