@@ -11,7 +11,7 @@ const renderAttachment = (file, url, description = "") => {
                 />
             );
         case "audio":
-            return <audio src={url} controls className="w-[200px] h-[150px] object-contain" />;
+            return <audio src={url} controls className="w-[200px]  object-contain" />;
         default:
             return <a href={url}>Download</a>;
     }

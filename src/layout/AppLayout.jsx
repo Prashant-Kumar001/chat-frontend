@@ -108,7 +108,6 @@ const AppLayout = () => (WrappedComponent) => {
     );
 
     const onlineUsersListener = useCallback((data) => {
-      console.log(data)
       setOnlineUsers(data);
     }, []);
 

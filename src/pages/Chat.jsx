@@ -174,7 +174,7 @@ const Chat = ({ chatId, user }) => {
 
   useError(errors);
 
-  return isLoading ? (
+  return isLoading || oldMessagesChunks.isLoading ? (
     <Skeleton />
   ) : (
     <div className="flex flex-col h-full">
