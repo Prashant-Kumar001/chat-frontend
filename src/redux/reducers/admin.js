@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {adminLogin, adminLogout} from '../reducers/thunk/admin.js'
+import {adminLogin} from '../reducers/thunk/admin.js'
 
 
 const initialState = {
@@ -30,12 +30,6 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(adminLogout.fulfilled, (state) => {
-        state.user = null;
-        state.loading = false;
-        state.error = null;
-        state.status = null
-      });
   },
 });
 

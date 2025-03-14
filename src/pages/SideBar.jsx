@@ -5,17 +5,13 @@ import { MessageCircle } from "lucide-react";
 import { HiUsers } from "react-icons/hi2";
 import { MdGroups2 } from "react-icons/md";
 import { Tooltip } from "@mui/material";
-import { adminLogout } from "../redux/reducers/thunk/admin.js";
 import { useDispatch } from "react-redux";
 
 
 const SideBar = ({ width }) => {
     const location = useLocation();
     const dispatch = useDispatch();
-    const handlerLogout = () => {
-        dispatch(adminLogout());
-    }
-
+    
     const adminRoutes = [
         {
             path: "dashboard",

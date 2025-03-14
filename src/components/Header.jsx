@@ -41,15 +41,17 @@ const Header = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const handleLogout = async () => {
+    const toastId = toast.loading("Logging out...");
     try {
       dispatch(setLoading(true));
-      await axios.get(`${API_BASE_URL}/auth/logout`, { withCredentials: true });
+      await axios.get(`${API_BASE_URL}/api/v1/auth/logout`, { withCredentials: true });
       toast.success("Logged out");
       dispatch(logout());
       navigate("/login");
     } catch (error) {
       toast.error("Failed to log out");
     } finally {
+      toast.dismiss(toastId);
       dispatch(setLoading(false));
     }
   };

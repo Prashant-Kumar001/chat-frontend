@@ -36,18 +36,6 @@ const reFetchAdmin = createAsyncThunk(
     }
   }
 );
-const adminLogout = createAsyncThunk(
-  "admin/logout",
-  async ({ rejectWithValue }) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/api/v1/admin/logout`, {
-        withCredentials: true,
-      });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || "Login failed");
-    }
-  }
-);
 
-export { adminLogin, reFetchAdmin, adminLogout };
+
+export { adminLogin, reFetchAdmin };
