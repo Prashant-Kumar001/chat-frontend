@@ -108,7 +108,7 @@ export default function Notifications({ onClose }) {
 const Notification = ({ _id, sender, createdAt, requestHandler }) => {
   return (
     <div className="flex flex-col md:flex-row items-center justify-between bg-gray-50 hover:bg-gray-100 rounded-lg p-2 border border-gray-200 transition">
-      <div className="flex items-center justify-between gap-3 w-full">
+      <div className="flex items-center justify-between gap-1 w-full">
         <div className="flex gap-2">
           <Avatar
             alt={sender?.name}

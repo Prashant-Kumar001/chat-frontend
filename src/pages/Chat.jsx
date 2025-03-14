@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from "react";
 import { useInfiniteScrollTop } from "6pp";
 import AppLayout from "../layout/AppLayout";
 import { MdOutlineAttachFile } from "react-icons/md";
@@ -42,7 +48,7 @@ const Chat = ({ chatId, user }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [iamTyping, setIamTyping] = useState(false);
   const [userTyping, setUserTyping] = useState(false);
-  const [currentUserTyping, setCurrentUserTyping] = useState('');
+  const [currentUserTyping, setCurrentUserTyping] = useState("");
 
   const {
     data: Chat,
@@ -62,7 +68,11 @@ const Chat = ({ chatId, user }) => {
 
   const errors = [
     { isError, error },
-    { isError: oldMessagesChunks.isError, error: oldMessagesChunks.error, fallback: () => navigate("/") },
+    {
+      isError: oldMessagesChunks.isError,
+      error: oldMessagesChunks.error,
+      fallback: () => navigate("/"),
+    },
   ];
 
   const members = Chat?.data?.members;
@@ -108,22 +118,25 @@ const Chat = ({ chatId, user }) => {
     (data) => {
       if (data.chatId !== chatId) return;
       setUserTyping(false);
-      setCurrentUserTyping('');
+      setCurrentUserTyping("");
     },
     [chatId]
   );
 
-  const messageForAlert = useCallback((content) => {
-    setMessages((prev) => [
-      ...prev,
-      {
-        content,
-        sender: { _id: "admin", name: "Admin" },
-        chat: chatId,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
-  }, [chatId]);
+  const messageForAlert = useCallback(
+    (content) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          content,
+          sender: { _id: "admin", name: "Admin" },
+          chat: chatId,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
+    },
+    [chatId]
+  );
 
   const handleMessageSend = (e) => {
     e.preventDefault();
@@ -135,7 +148,7 @@ const Chat = ({ chatId, user }) => {
   const newMessageHandler = useCallback(
     (data) => {
       if (chatId !== data.chatId) return;
-      setMessages((prev) => [...prev, data.message]); 
+      setMessages((prev) => [...prev, data.message]);
     },
     [chatId]
   );
@@ -174,24 +187,45 @@ const Chat = ({ chatId, user }) => {
 
   useError(errors);
 
-  return isLoading || oldMessagesChunks.isLoading ? (
+  return isLoading ? (
     <Skeleton />
   ) : (
     <div className="flex flex-col h-full">
       <div ref={containerRef} className="overflow-y-scroll h-[79vh]">
+        {allMessages.length === 0 && <NoMessages />}{" "}
         {allMessages.map((msg) => (
           <Message key={msg._id} message={msg} user={user} />
         ))}
-        {userTyping && <TypingIndicator currentUserTyping={currentUserTyping} />}
+        {userTyping && (
+          <TypingIndicator currentUserTyping={currentUserTyping} />
+        )}
         <div ref={messagesEndRef} />
       </div>
       <div className="flex items-center p-3">
         <IconButton onClick={handleClick}>
           <MdOutlineAttachFile color="white" />
         </IconButton>
-        <FileMenu handleClose={handleClose} anchorEl={anchorEl} open={isFileMenu} chatId={chatId} />
-        <MessageInput message={message} setMessage={sendMessage} handleMessageSend={handleMessageSend} />
+        <FileMenu
+          handleClose={handleClose}
+          anchorEl={anchorEl}
+          open={isFileMenu}
+          chatId={chatId}
+        />
+        <MessageInput
+          message={message}
+          setMessage={sendMessage}
+          handleMessageSend={handleMessageSend}
+        />
       </div>
+    </div>
+  );
+};
+
+const NoMessages = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-full">
+      <h1 className="text-2xl font-semibold text-gray-600">No messages yet</h1>
+      <p className="text-gray-500 mt-2">Start a conversation</p>
     </div>
   );
 };
