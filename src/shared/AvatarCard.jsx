@@ -32,6 +32,7 @@ const AvatarCard = ({
               key={index}
               src={img}
               alt={alt}
+              loading="lazy"
               className={`rounded-full border-2 border-white shadow-md object-cover ${sizeClasses[size]}`}
             />
           ))}

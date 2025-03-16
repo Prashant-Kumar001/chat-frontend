@@ -1,8 +1,7 @@
 import React, { memo } from "react";
 import { Link } from "react-router-dom";
-import { Badge, Box } from "@mui/material";
+import {  Box, Grid2 } from "@mui/material";
 import { motion } from "framer-motion";
-import Avatar from "./AvatarCard.jsx";
 import AvatarCard from "./AvatarCard.jsx";
 
 const ChatItem = ({
@@ -43,10 +42,12 @@ const ChatItem = ({
           name={name}
           isOnline={isOnline}
         />
-        <div
-          className={`justify-between items-center w-[11rem] md:w-56 ${
-            isMobileView ? "flex" : "hidden md:flex"
-          }`}
+        <Grid2
+        sx={{
+          display: { xs: `${isMobileView ? "flex" : "none"}`, sm: `flex` },
+          justifyContent: "space-between",
+          width: "72%"
+        }}
         >
           <div className="">
             <p className="text-base font-semibold truncate">{name}</p>
@@ -57,7 +58,7 @@ const ChatItem = ({
               {newMessage.count}
             </Box>
           )}
-        </div>
+        </Grid2>
       </Link>
     </motion.div>
   );

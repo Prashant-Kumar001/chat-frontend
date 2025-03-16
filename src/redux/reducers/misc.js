@@ -14,6 +14,7 @@ const initialState = {
         chatId: "",
         groupChat: false,
     },
+    mobileProfileView: false,
 };
 
 const misc = createSlice({
@@ -53,6 +54,9 @@ const misc = createSlice({
         setOpenTransferFile: (state, action) => {
             state.openTransferFile = action.payload;
         },
+        setMobileProfileView: (state, action) => {
+            state.mobileProfileView = action.payload;
+        }
     },
 });
 
@@ -68,5 +72,6 @@ export const {
     setIsSelectedDeleteChat,
     setLoading,
     setOpenTransferFile,
+    setMobileProfileView,
 } = misc.actions;
 export default misc.reducer;

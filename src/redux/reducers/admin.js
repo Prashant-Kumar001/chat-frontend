@@ -1,19 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {adminLogin} from '../reducers/thunk/admin.js'
-
+import { adminLogin } from "../reducers/thunk/admin.js";
 
 const initialState = {
   user: null,
   loading: false,
   error: null,
-  status: null
+  status: null,
 };
-
 
 const adminSlice = createSlice({
   name: "admin",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.user = null;
+      state.loading = false;
+      state.error = null;
+      state.status = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(adminLogin.pending, (state) => {
@@ -26,12 +31,12 @@ const adminSlice = createSlice({
         state.status = action.payload?.role;
       })
       .addCase(adminLogin.rejected, (state, action) => {
-        console.log(action.payload)
+        console.log(action.payload);
         state.loading = false;
         state.error = action.payload;
-      })
+      });
   },
 });
 
-export const {} = adminSlice.actions;
+export const { logout } = adminSlice.actions;
 export default adminSlice.reducer;

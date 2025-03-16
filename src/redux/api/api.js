@@ -171,49 +171,68 @@ const api = createApi({
       invalidatesTags: ["Chat"],
     }),
     getDashboard: builder.query({
-        query: () => {
-          const url = `admin/stats`;
-          return {
-            url,
-            method: "GET",
-            credentials: "include",
-          };
-        },
-        providesTags: ["Dashboard"],
-      }),
+      query: () => {
+        const url = `admin/stats`;
+        return {
+          url,
+          method: "GET",
+          credentials: "include",
+        };
+      },
+      providesTags: ["Dashboard"],
+    }),
     getAllUsers: builder.query({
-        query: () => {
-          const url = `admin/users`;
-          return {
-            url,
-            method: "GET",
-            credentials: "include",
-          };
-        },
-        providesTags: ["Users"],
-      }),
+      query: () => {
+        const url = `admin/users`;
+        return {
+          url,
+          method: "GET",
+          credentials: "include",
+        };
+      },
+      providesTags: ["Users"],
+    }),
     getAllUsersMessages: builder.query({
-        query: () => {
-          const url = `admin/messages`;
-          return {
-            url,
-            method: "GET",
-            credentials: "include",
-          };
-        },
-        providesTags: ["Messages"],
-      }),
+      query: () => {
+        const url = `admin/messages`;
+        return {
+          url,
+          method: "GET",
+          credentials: "include",
+        };
+      },
+      providesTags: ["Messages"],
+    }),
     getAllUsersChats: builder.query({
-        query: () => {
-          const url = `admin/chats`;
-          return {
-            url,
-            method: "GET",
-            credentials: "include",
-          };
-        },
-        providesTags: ["chats"],
+      query: () => {
+        const url = `admin/chats`;
+        return {
+          url,
+          method: "GET",
+          credentials: "include",
+        };
+      },
+      providesTags: ["chats"],
+    }),
+    getMyProfile: builder.query({
+      query: () => ({
+        url: "user/me",
+        method: "GET",
+        credentials: "include",
       }),
+      providesTags: ["Profile"],
+    }),
+    updateUserProfile: builder.mutation({
+      query: ({ id, user }) => {
+        return {
+          url: `user/${id}`,
+          method: "PUT",
+          credentials: "include",
+          body: user,
+        };
+      },
+      invalidatesTags: ["Profile"],
+    }),
   }),
 });
 
@@ -239,4 +258,6 @@ export const {
   useGetAllUsersQuery,
   useGetAllUsersMessagesQuery,
   useGetAllUsersChatsQuery,
+  useGetMyProfileQuery,
+  useUpdateUserProfileMutation,
 } = api;

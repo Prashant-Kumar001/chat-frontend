@@ -6,7 +6,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import AvatarCard from "../shared/AvatarCard";
 import toast from "react-hot-toast";
-import AddMemberDialog from "../components/Dialogs/AddMemberDialog.jsx";
 import UserItem from "../shared/UserItem";
 import Icon from "../shared/IconBtn.jsx";
 import {
@@ -25,10 +24,11 @@ import { useDispatch, useSelector } from "react-redux";
 import NewLoader from "../components/NewLoader.jsx";
 import { setIsAddMember } from "../redux/reducers/misc.js";
 import { motion } from "framer-motion";
-import OpenTransferOwner from "../components/Dialogs/OpenTransferOwner";
 import { setOpenTransferFile } from "../redux/reducers/misc.js";
 
+import AddMemberDialog from "../components/Dialogs/AddMemberDialog.jsx";
 const DialogsModal = lazy(() => import("../components/Dialogs/ConfirmDialog"));
+const OpenTransferOwner = lazy(() => import("../components/Dialogs/OpenTransferOwner"));
 
 const Groups = () => {
   const navigate = useNavigate();

@@ -15,7 +15,6 @@ import NewLoader from "./components/NewLoader";
 import AdminLayout from "./layout/AdminLayout";
 import { SocketProvider } from "./Socket";
 
-import NotFound from "./pages/NotFound";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -28,8 +27,9 @@ const Users = lazy(() => import("./pages/admin/UsersManagement"));
 const ChatManagement = lazy(() => import("./pages/admin/ChatManagement"));
 const MessageManagement = lazy(() => import("./pages/admin/MessageManagement"));
 const AdminWelcome = lazy(() => import("./pages/admin/AdminWelcome"))
+const NotFound = lazy(() => import("./pages/NotFound"))
+const AdminProtectedRoute = lazy(() => import("./pages/admin/AdminProtectedRoute"))
 
-import AdminProtectedRoute from "./pages/admin/AdminProtectedRoute";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useSelector((state) => state.auth);
@@ -50,7 +50,7 @@ const App = () => {
           headers: { "Content-Type": "application/json" },
         });
         dispatch(login(res?.data.data?.user));
-      } catch (error) {
+      } catch (error) { 
       } finally {
         dispatch(setLoading(false));
         setAuthChecked(true);

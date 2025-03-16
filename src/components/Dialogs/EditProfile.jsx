@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -7,26 +7,108 @@ import {
   TextField,
   Button,
   Box,
+  Avatar,
+  IconButton,
 } from "@mui/material";
-import { Save as SaveIcon, Cancel as CancelIcon, Update } from "@mui/icons-material";
+import { Cancel as CancelIcon, Update, PhotoCamera } from "@mui/icons-material";
+import toast from "react-hot-toast";
 
-const EditProfile = ({ open, onClose, onSave, userData }) => {
-  const [formData, setFormData] = useState({
-    username: userData?.username || "",
-    name: userData?.name || "",
-    email: userData?.email || "",
-    bio: userData?.bio || "",
-  });
+const EditProfile = ({ open, onClose, onSave, user }) => {
+  const initialData = {
+    username: user?.username || "",
+    name: user?.name || "",
+    email: user?.email || "",
+    bio: user?.bio || "",
+    avatar: user?.avatar?.secure_url || "",
+  };
+
+  const [formData, setFormData] = useState(initialData);
+  const [imageFile, setImageFile] = useState(null);
+
+  useEffect(() => {
+    setFormData(initialData);
+    setImageFile(null);
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setFormData({ ...formData, avatar: URL.createObjectURL(file) });
+    }
+  };
+
+  const handleSave = () => {
+    let modifiedFields = {};
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] !== initialData[key]) {
+        modifiedFields[key] = formData[key];
+      }
+    });
+
+    if (imageFile) {
+      modifiedFields.avatarFile = imageFile;
+    }
+
+    if (Object.keys(modifiedFields).length > 0) {
+      onSave({ ...modifiedFields, id: user?._id });
+    } else {
+      toast.error("Couldn't save, please modify at least once field", {
+        style: {
+          minWidth: "400px", 
+          maxWidth: "500px", 
+          whiteSpace: "nowrap", 
+          overflow: "hidden", 
+          textOverflow: "ellipsis", 
+          textAlign: "center",
+        },
+      });
+    }
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Edit Profile</DialogTitle>
       <DialogContent>
-        <Box display="flex" flexDirection="column" gap={2} mt={1}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap={2}
+          mt={1}
+          alignItems="center"
+        >
+          <Box position="relative">
+            <Avatar
+              src={formData.avatar}
+              alt="Profile Picture"
+              sx={{ width: 100, height: 100 }}
+            />
+            <input
+              accept="image/*"
+              id="avatar-upload"
+              type="file"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+            />
+            <label htmlFor="avatar-upload">
+              <IconButton
+                color="primary"
+                component="span"
+                sx={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 0,
+                  backgroundColor: "white",
+                }}
+              >
+                <PhotoCamera />
+              </IconButton>
+            </label>
+          </Box>
           <TextField
             label="Username"
             name="username"
@@ -46,11 +128,11 @@ const EditProfile = ({ open, onClose, onSave, userData }) => {
             name="email"
             type="email"
             value={formData.email}
-            onChange={handleChange} 
+            onChange={handleChange}
             fullWidth
           />
           <TextField
-            label="Bio"    
+            label="Bio"
             name="bio"
             value={formData.bio}
             onChange={handleChange}
@@ -71,11 +153,11 @@ const EditProfile = ({ open, onClose, onSave, userData }) => {
         </Button>
         <Button
           startIcon={<Update />}
-          onClick={() => onSave(formData)}
+          onClick={handleSave}
           color="primary"
           variant="contained"
         >
-          update
+          Update
         </Button>
       </DialogActions>
     </Dialog>
