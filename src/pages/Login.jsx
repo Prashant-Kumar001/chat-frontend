@@ -33,12 +33,10 @@ function Login() {
           "Content-Type": "application/json",
         },
       });
-      console.log(res)
       dispatch(login(res?.data?.user));
       navigate("/");
       toast.success("Logged in successfully");
     } catch (error) {
-      console.log(error)
       toast.error(error.response.data.message);
       dispatch(setLoading(false));
     } finally {

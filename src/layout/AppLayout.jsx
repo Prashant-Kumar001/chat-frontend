@@ -173,6 +173,7 @@ const AppLayout = () => (WrappedComponent) => {
               handlerDeleteChat={handleDeleteChat}
               onlineUsers={onlineUsers}
               chatID={_id}
+              isLoading={isLoading}
             />
           </Drawer>
         )}
@@ -199,17 +200,16 @@ const AppLayout = () => (WrappedComponent) => {
               backgroundColor: "rgba(243, 244, 246)",
             }}
           >
-            {isLoading ? (
-              <Skeleton variant="rectangular" sx={{ height: "100%" }} />
-            ) : isError ? (
-              <Skeleton variant="rectangular" sx={{ height: "100%" }} />
-            ) : (
+            {(
               <ChatList
                 chats={myChats?.data}
                 chatId={_id}
                 newMessageAlert={newMessageALertNotify}
                 handlerDeleteChat={handleDeleteChat}
                 onlineUsers={onlineUsers}
+                isLoading={isLoading}
+                isError={isError}
+                error={error}
               />
             )}
           </Grid2>

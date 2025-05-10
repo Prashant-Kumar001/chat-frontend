@@ -28,6 +28,31 @@ import { removeNewMessageAlert } from "../redux/reducers/chat.js";
 import { TypingIndicator } from "../components/Loader.jsx";
 import { useNavigate } from "react-router-dom";
 
+
+const ChatMessagesSkeleton = () => {
+  const placeholders = new Array(16).fill(0);
+
+  return (
+    <div className="flex flex-col gap-3 p-4 w-full h-full overflow-y-auto animate-pulse">
+      {placeholders.map((_, index) => (
+        <div
+          key={index}
+          className={`flex ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}
+        >
+          <div
+            className={`rounded-2xl px-4 py-2 ${
+              index % 2 === 0
+                ? 'bg-gray-300 dark:bg-gray-700'
+                : 'bg-blue-400 dark:bg-blue-600'
+            } w-[60%] h-5`}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+
 const Chat = ({ chatId, user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -106,12 +131,12 @@ const Chat = ({ chatId, user }) => {
 
   const isUserTyping = useCallback(
     (data) => {
-      if(data?.members.length > 2) setUser(data.username)
+      if (data?.members.length > 2) setUser(data.username)
       if (data.chatId !== chatId) return;
       setUserTyping((prev) => !prev);
     },
     [chatId]
-  ); 
+  );
 
   const stopUserTyping = useCallback(
     (data) => {
@@ -186,7 +211,14 @@ const Chat = ({ chatId, user }) => {
   useError(errors);
 
   return isLoading ? (
-    <Skeleton />
+    <div className="flex items-center  h-full">
+      <Skeleton
+        variant="rectangular"
+        width={1000}
+        height={1000}
+        className="rounded-lg"
+      />
+    </div>
   ) : (
     <div className="flex flex-col h-full bg-gray-100">
       <div
@@ -194,7 +226,7 @@ const Chat = ({ chatId, user }) => {
         className="overflow-y-scroll h-[79vh] flex flex-col gap-4  "
       >
         {oldMessagesChunks.isLoading ? (
-          <Skeleton height="100%" />
+          <ChatMessagesSkeleton />
         ) : allMessages.length > 0 ? (
           allMessages.map((msg, index) => (
             <Message key={msg._id} message={msg} user={user} />

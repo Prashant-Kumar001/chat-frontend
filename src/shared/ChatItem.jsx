@@ -2,7 +2,6 @@ import React, { memo } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@mui/material";
 import { motion } from "framer-motion";
-import formatTimestamp from "../utils/timeConvert.js";
 import Avatar from "./AvatarCard.jsx";
 
 const ChatItem = ({
@@ -22,7 +21,7 @@ const ChatItem = ({
         <motion.div
             initial={{ opacity: 0, y: "-100%" }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.3 }}
         >
             <Link
                 to={`/chat/${_id}`}

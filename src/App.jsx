@@ -64,9 +64,9 @@ const App = () => {
   if (!authChecked) return <NewLoader />;
 
   return (
-    <ErrorBoundary>
-      <Router>
-        <Suspense fallback={<Loader />}>
+    <Suspense fallback={<Loader />}>
+      <ErrorBoundary>
+        <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -121,9 +121,9 @@ const App = () => {
 
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Suspense>
-      </Router>
-    </ErrorBoundary>
+        </Router>
+      </ErrorBoundary>
+    </Suspense>
   );
 };
 
