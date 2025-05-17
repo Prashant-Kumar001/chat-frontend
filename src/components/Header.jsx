@@ -43,7 +43,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       dispatch(setLoading(true));
-      await axios.get(`${API_BASE_URL}/auth/logout`, { withCredentials: true });
+      await axios.get(`${API_BASE_URL}/api/v1/auth/logout`, { withCredentials: true });
       toast.success("Logged out");
       dispatch(logout());
       navigate("/login");
